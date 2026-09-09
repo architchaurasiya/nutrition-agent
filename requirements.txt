@@ -1,0 +1,6 @@
+flask
+flask-cors
+requests
+pydantic
+python-dotenv
+ibm-watsonx-orchestrate
