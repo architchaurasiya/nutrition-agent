@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>NutriAI — Powered by IBM Granite</title>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -31,6 +31,28 @@
   --r3:8px;
 }
 
+/* ══════════════════════════════════
+   LIGHT MODE
+══════════════════════════════════ */
+body.light{
+  --bg:#f0f2f7;
+  --bg2:#ffffff;
+  --surface:#ffffff;
+  --surface2:#f0f3f8;
+  --border:#dce1ea;
+  --border2:#c5cdd8;
+  --glow:rgba(79,142,247,.12);
+  --greenglow:rgba(34,201,122,.10);
+  --text:#1a1f2e;
+  --text2:#555f74;
+  --text3:#8892a6;
+}
+body.light .msg.user .bubble{color:#fff}
+body.light .msg-avatar.ai{color:#fff}
+body.light .logo svg{fill:#fff}
+body.light .send-btn svg{fill:#fff}
+body.light .btn-green,.light .btn-primary{color:#fff}
+
 html{height:100%;overflow:hidden}
 
 body{
@@ -43,6 +65,7 @@ body{
   flex-direction:column;
   font-size:14px;
   line-height:1.6;
+  transition:background .3s,color .3s;
 }
 
 /* ── Scrollbar ── */
@@ -64,6 +87,7 @@ header{
   align-items:center;
   gap:14px;
   z-index:200;
+  transition:background .3s,border-color .3s;
 }
 
 .logo{
@@ -88,8 +112,19 @@ header{
   border:1px solid rgba(79,142,247,.25);
   border-radius:99px;
   font-size:11px;font-weight:600;color:var(--accent);
+  white-space:nowrap;
 }
 .badge-dot{width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green)}
+
+/* Theme toggle */
+.theme-btn{
+  width:34px;height:34px;border-radius:9px;
+  background:var(--surface);border:1px solid var(--border);
+  cursor:pointer;display:flex;align-items:center;justify-content:center;
+  font-size:16px;transition:all .2s;
+  flex-shrink:0;
+}
+.theme-btn:hover{border-color:var(--accent);background:var(--surface2);transform:scale(1.08)}
 
 /* ══════════════════════════════════
    LAYOUT
@@ -97,14 +132,14 @@ header{
 .app{
   flex:1;
   display:grid;
-  grid-template-columns:252px 1fr;
+  grid-template-columns:260px minmax(0,1fr);
   width:100%;
   max-width:100%;
   padding:14px;
   gap:14px;
   overflow:hidden;
   min-height:0;
-  align-items:start;
+  align-items:stretch;
 }
 
 /* ══════════════════════════════════
@@ -116,7 +151,7 @@ header{
   gap:10px;
   overflow-y:auto;
   overflow-x:hidden;
-  height:calc(100vh - 56px - 28px);  /* viewport - header - top+bottom padding */
+  min-height:0;
   padding-right:2px;
 }
 
@@ -128,6 +163,7 @@ header{
   position:relative;
   overflow:hidden;
   flex-shrink:0;
+  transition:background .3s,border-color .3s;
 }
 .card::before{
   content:'';
@@ -163,6 +199,23 @@ header{
   box-shadow:0 0 0 3px var(--glow);
 }
 .fg select option{background:var(--surface)}
+
+/* BMI Display */
+.bmi-bar{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:8px 12px;
+  background:var(--bg2);
+  border:1px solid var(--border);
+  border-radius:var(--r3);
+  margin-bottom:10px;
+}
+.bmi-label{font-size:11px;font-weight:600;color:var(--text2)}
+.bmi-value{font-size:14px;font-weight:800;color:var(--text3);transition:color .2s}
+.bmi-value .bmi-cat{font-size:10px;font-weight:600;margin-left:4px;opacity:.8}
+.bmi-under{color:var(--accent)}
+.bmi-normal{color:var(--green)}
+.bmi-over{color:var(--orange)}
+.bmi-obese{color:var(--danger)}
 
 /* Buttons */
 .btn{
@@ -218,15 +271,17 @@ header{
 .qc-blue{background:rgba(79,142,247,.15)}
 .qc-green{background:rgba(34,201,122,.15)}
 .qc-orange{background:rgba(249,115,22,.15)}
-.qcard-text{}
-.qcard-title{font-size:12.5px;font-weight:700;color:var(--text);display:block}
-.qcard-desc{font-size:11px;color:var(--text3);margin-top:2px}
+.qc-purple{background:rgba(167,139,250,.15)}
+.qcard-text{min-width:0}
+.qcard-title{font-size:12.5px;font-weight:700;color:var(--text);display:block;overflow-wrap:break-word;word-break:break-word}
+.qcard-desc{font-size:11px;color:var(--text3);margin-top:2px;overflow-wrap:break-word;word-break:break-word}
 
 /* Status pill */
 .status-pill{
   display:inline-flex;align-items:center;gap:5px;
   padding:4px 10px;border-radius:99px;
   font-size:11px;font-weight:600;
+  white-space:nowrap;
 }
 .status-online{background:rgba(34,201,122,.1);border:1px solid rgba(34,201,122,.25);color:var(--green)}
 .status-offline{background:rgba(248,113,113,.08);border:1px solid rgba(248,113,113,.2);color:var(--danger)}
@@ -245,6 +300,8 @@ header{
   border-radius:var(--r);
   overflow:hidden;
   min-height:0;
+  min-width:0;
+  transition:background .3s,border-color .3s;
 }
 
 /* Chat header */
@@ -254,6 +311,7 @@ header{
   display:flex;align-items:center;gap:12px;
   background:var(--bg2);
   flex-shrink:0;
+  transition:background .3s,border-color .3s;
 }
 .chat-avatar{
   width:36px;height:36px;border-radius:10px;
@@ -262,10 +320,10 @@ header{
   font-size:16px;flex-shrink:0;
   box-shadow:0 0 14px var(--glow);
 }
-.chat-head-info{}
-.chat-head-name{font-size:14px;font-weight:700;color:var(--text)}
-.chat-head-sub{font-size:11px;color:var(--text3);margin-top:1px}
-.chat-head-right{margin-left:auto;display:flex;gap:8px;align-items:center}
+.chat-head-info{min-width:0;flex:1}
+.chat-head-name{font-size:14px;font-weight:700;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.chat-head-sub{font-size:11px;color:var(--text3);margin-top:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.chat-head-right{margin-left:auto;display:flex;gap:8px;align-items:center;flex-shrink:0}
 
 .icon-btn{
   width:32px;height:32px;border-radius:8px;
@@ -273,15 +331,17 @@ header{
   color:var(--text3);cursor:pointer;
   display:flex;align-items:center;justify-content:center;
   font-size:14px;transition:all .15s;
+  flex-shrink:0;
 }
 .icon-btn:hover{background:var(--surface2);color:var(--text);border-color:var(--border2)}
 
 /* Messages */
 .chat-messages{
-  flex:1;overflow-y:auto;
+  flex:1;overflow-y:auto;overflow-x:hidden;
   padding:22px 20px;
   display:flex;flex-direction:column;gap:18px;
   scroll-behavior:smooth;
+  min-height:0;
 }
 
 /* Welcome */
@@ -296,6 +356,7 @@ header{
   display:flex;align-items:center;justify-content:center;
   font-size:32px;
   box-shadow:0 0 40px var(--glow),0 0 40px var(--greenglow);
+  flex-shrink:0;
 }
 .welcome h2{font-size:20px;font-weight:800;color:var(--text);letter-spacing:-.3px}
 .welcome p{font-size:13px;color:var(--text2);max-width:360px;line-height:1.7}
@@ -307,11 +368,12 @@ header{
   background:var(--surface2);border:1px solid var(--border);
   font-size:12px;color:var(--text2);cursor:pointer;
   transition:all .15s;
+  white-space:nowrap;
 }
 .chip:hover{border-color:var(--accent);color:var(--accent);background:rgba(79,142,247,.08)}
 
 /* Message bubbles */
-.msg{display:flex;gap:10px;align-items:flex-start;animation:fadeUp .25s ease}
+.msg{display:flex;gap:10px;align-items:flex-start;animation:fadeUp .25s ease;min-width:0}
 
 @keyframes fadeUp{
   from{opacity:0;transform:translateY(8px)}
@@ -330,10 +392,14 @@ header{
 
 .bubble{
   max-width:78%;
+  min-width:0;
   padding:13px 16px;
   border-radius:16px;
   font-size:13.5px;
   line-height:1.7;
+  overflow-wrap:break-word;
+  word-break:break-word;
+  overflow:hidden;
 }
 .msg.ai .bubble{
   background:var(--surface2);
@@ -348,22 +414,43 @@ header{
   box-shadow:0 4px 16px rgba(79,142,247,.25);
 }
 
+/* Photo preview in bubble */
+.photo-preview{margin-bottom:8px;border-radius:10px;overflow:hidden;max-width:240px}
+.photo-preview img{width:100%;height:auto;display:block;border-radius:10px}
+
 /* Rich formatting inside bubbles */
 .bubble h3{
   font-size:13px;font-weight:700;
   color:var(--accent);
   margin:12px 0 5px;
   display:flex;align-items:center;gap:5px;
+  flex-wrap:wrap;
 }
 .bubble h3:first-child{margin-top:0}
 .msg.user .bubble h3{color:rgba(255,255,255,.85)}
 .bubble ul{padding-left:18px;margin:5px 0}
-.bubble li{margin-bottom:4px}
+.bubble li{margin-bottom:4px;overflow-wrap:break-word;word-break:break-word}
 .bubble strong{font-weight:700}
-.bubble p{margin-bottom:6px}
+.bubble p{margin-bottom:6px;overflow-wrap:break-word;word-break:break-word}
 .bubble p:last-child{margin-bottom:0}
 .bubble hr{border:none;border-top:1px solid var(--border);margin:10px 0}
 .msg.user .bubble hr{border-color:rgba(255,255,255,.2)}
+
+/* ── Feedback Buttons ── */
+.msg-actions{
+  display:flex;gap:4px;margin-top:6px;padding-left:42px;
+  animation:fadeUp .2s ease;
+}
+.fb-btn{
+  width:28px;height:28px;border-radius:7px;
+  background:transparent;border:1px solid var(--border);
+  cursor:pointer;display:flex;align-items:center;justify-content:center;
+  font-size:13px;transition:all .15s;
+  color:var(--text3);
+}
+.fb-btn:hover{border-color:var(--accent);background:rgba(79,142,247,.06);transform:scale(1.1)}
+.fb-btn.active.like{background:rgba(34,201,122,.15);border-color:var(--green);color:var(--green)}
+.fb-btn.active.dislike{background:rgba(248,113,113,.1);border-color:var(--danger);color:var(--danger)}
 
 /* Typing indicator */
 .typing{display:flex;gap:10px;align-items:center;animation:fadeUp .2s ease}
@@ -394,6 +481,9 @@ header{
   color:var(--danger);
   font-size:12.5px;
   display:flex;align-items:center;gap:7px;
+  overflow-wrap:break-word;
+  word-break:break-word;
+  min-width:0;
 }
 
 /* ══════════════════════════════════
@@ -404,6 +494,7 @@ header{
   border-top:1px solid var(--border);
   background:var(--bg2);
   flex-shrink:0;
+  transition:background .3s,border-color .3s;
 }
 
 .input-row{
@@ -412,7 +503,7 @@ header{
   border:1px solid var(--border);
   border-radius:var(--r2);
   padding:8px 8px 8px 14px;
-  transition:border-color .15s,box-shadow .15s;
+  transition:border-color .15s,box-shadow .15s,background .3s;
 }
 .input-row:focus-within{
   border-color:var(--accent);
@@ -425,8 +516,41 @@ header{
   resize:none;font-family:inherit;
   line-height:1.5;max-height:120px;
   padding:3px 0;
+  min-width:0;
 }
 #userInput::placeholder{color:var(--text3)}
+
+/* Mic button */
+.mic-btn{
+  width:36px;height:36px;border-radius:8px;
+  background:var(--surface2);border:1px solid var(--border);
+  cursor:pointer;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  transition:all .15s;
+  color:var(--text3);font-size:16px;
+}
+.mic-btn:hover{border-color:var(--accent);color:var(--accent);background:rgba(79,142,247,.08)}
+.mic-btn.recording{
+  background:rgba(248,113,113,.15);
+  border-color:var(--danger);
+  color:var(--danger);
+  animation:pulse-mic 1.2s ease-in-out infinite;
+}
+@keyframes pulse-mic{
+  0%,100%{box-shadow:0 0 0 0 rgba(248,113,113,.3)}
+  50%{box-shadow:0 0 0 8px rgba(248,113,113,0)}
+}
+
+/* Photo button */
+.photo-btn{
+  width:36px;height:36px;border-radius:8px;
+  background:var(--surface2);border:1px solid var(--border);
+  cursor:pointer;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  transition:all .15s;
+  color:var(--text3);font-size:16px;
+}
+.photo-btn:hover{border-color:var(--orange);color:var(--orange);background:rgba(249,115,22,.08)}
 
 .send-btn{
   width:36px;height:36px;border-radius:8px;
@@ -441,13 +565,16 @@ header{
 .send-btn svg{width:16px;height:16px;fill:#fff}
 
 .input-footer{
-  display:flex;justify-content:space-between;
+  display:flex;justify-content:flex-end;
   margin-top:7px;font-size:11px;color:var(--text3);
   padding:0 2px;
+  flex-wrap:wrap;
+  gap:4px;
 }
 .model-tag{
   display:flex;align-items:center;gap:5px;
   color:var(--accent);font-weight:600;
+  white-space:nowrap;
 }
 .model-tag svg{width:11px;height:11px;fill:var(--accent)}
 
@@ -460,21 +587,105 @@ footer{
   border-top:1px solid var(--border);
   background:var(--bg2);
   flex-shrink:0;
+  transition:background .3s,border-color .3s;
 }
 
 /* ══════════════════════════════════
-   RESPONSIVE
+   RESPONSIVE — Multi-breakpoint
 ══════════════════════════════════ */
+
+/* Narrower sidebar on medium-large screens */
+@media(max-width:1100px){
+  .app{grid-template-columns:220px minmax(0,1fr)}
+}
+
+/* Stack layout for tablets and small desktops */
 @media(max-width:860px){
-  html,body{overflow:auto;height:auto}
+  html,body{overflow:auto;height:auto;overflow-x:hidden}
   .app{
     grid-template-columns:1fr;
     overflow:visible;
     padding:12px;
     gap:12px;
   }
-  .sidebar{overflow-y:visible;min-height:auto}
+  .sidebar{
+    overflow-y:visible;
+    min-height:auto;
+    flex-direction:row;
+    flex-wrap:wrap;
+    gap:10px;
+  }
+  .sidebar .card{flex:1 1 240px;min-width:0}
   .chat-pane{min-height:65vh}
+  .bubble{max-width:88%}
+  .chat-messages{padding:16px 14px}
+  .msg-actions{padding-left:38px}
+}
+
+/* Phones */
+@media(max-width:600px){
+  header{padding:0 14px;gap:10px;height:50px;min-height:50px}
+  .logo{width:32px;height:32px;border-radius:9px}
+  .logo svg{width:16px;height:16px}
+  .header-name{font-size:14px}
+  .header-sub{display:none}
+  .badge{padding:3px 8px;font-size:10px}
+
+  .app{padding:8px;gap:8px}
+
+  .sidebar .card{flex:1 1 100%}
+  .sidebar{flex-direction:column;flex-wrap:nowrap}
+
+  .chat-pane{border-radius:var(--r2)}
+  .chat-header{padding:10px 14px;gap:10px}
+  .chat-avatar{width:30px;height:30px;font-size:14px}
+  .chat-head-name{font-size:13px}
+  .chat-head-sub{font-size:10px}
+  .chat-messages{padding:14px 10px;gap:14px}
+
+  .welcome{padding:20px 12px;gap:12px}
+  .welcome-glow{width:56px;height:56px;border-radius:16px;font-size:26px}
+  .welcome h2{font-size:17px}
+  .welcome p{font-size:12px}
+  .chips{gap:6px}
+  .chip{padding:6px 11px;font-size:11px}
+
+  .msg{gap:8px}
+  .msg-avatar{width:28px;height:28px;font-size:11px;border-radius:7px}
+  .bubble{max-width:92%;padding:10px 13px;font-size:13px;border-radius:14px}
+  .bubble h3{font-size:12.5px}
+  .bubble ul{padding-left:14px}
+  .msg-actions{padding-left:36px}
+  .fb-btn{width:26px;height:26px;font-size:12px}
+
+  .input-area{padding:10px 10px}
+  .input-row{padding:6px 6px 6px 12px}
+  #userInput{font-size:13px}
+  .send-btn{width:32px;height:32px;border-radius:7px}
+  .send-btn svg{width:14px;height:14px}
+  .mic-btn,.photo-btn{width:32px;height:32px;font-size:14px}
+  .input-footer{font-size:10px}
+
+  .card{padding:12px}
+  .fg input,.fg select{padding:6px 9px;font-size:12px}
+  .btn{padding:7px 12px;font-size:12px}
+
+  .qcard{padding:8px 10px;gap:8px}
+  .qcard-icon{width:26px;height:26px;font-size:12px;border-radius:6px}
+  .qcard-title{font-size:12px}
+  .qcard-desc{font-size:10px}
+
+  footer{padding:6px;font-size:10px}
+}
+
+/* Very small phones */
+@media(max-width:400px){
+  .app{padding:6px;gap:6px}
+  .bubble{max-width:95%;padding:9px 11px;font-size:12.5px}
+  .welcome h2{font-size:15px}
+  .chat-head-sub{display:none}
+  .badge{display:none}
+  .chip{padding:5px 9px;font-size:10px}
 }
 </style>
 </head>
@@ -491,6 +702,7 @@ footer{
   </div>
   <div class="header-right">
     <div class="badge"><span class="badge-dot"></span>IBM Granite-4</div>
+    <button class="theme-btn" id="themeBtn" onclick="toggleTheme()" title="Toggle theme"><span id="themeIcon">🌙</span></button>
   </div>
 </header>
 
@@ -513,20 +725,40 @@ footer{
     <!-- Profile -->
     <div class="card">
       <div class="card-label">My Profile</div>
-      <div class="fg">
-        <label>Age (years)</label>
-        <input type="number" id="p_age" min="1" max="120" placeholder="e.g. 28"/>
+
+      <!-- BMI Display -->
+      <div class="bmi-bar">
+        <span class="bmi-label">⚖️ BMI</span>
+        <span class="bmi-value" id="bmiDisplay">--</span>
       </div>
+
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
         <div class="fg" style="margin:0">
+          <label>Age (years)</label>
+          <input type="number" id="p_age" min="1" max="120" placeholder="e.g. 28"/>
+        </div>
+        <div class="fg" style="margin:0">
+          <label>Gender</label>
+          <select id="p_gender">
+            <option value="not specified">— select —</option>
+            <option value="male">👨 Male</option>
+            <option value="female">👩 Female</option>
+            <option value="other">⚧ Other</option>
+          </select>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px">
+        <div class="fg" style="margin:0">
           <label>Weight (kg)</label>
-          <input type="number" id="p_weight" min="20" max="300" step=".1" placeholder="70"/>
+          <input type="number" id="p_weight" min="20" max="300" step=".1" placeholder="70" oninput="updateBMI()"/>
         </div>
         <div class="fg" style="margin:0">
           <label>Height (cm)</label>
-          <input type="number" id="p_height" min="100" max="250" placeholder="170"/>
+          <input type="number" id="p_height" min="100" max="250" placeholder="170" oninput="updateBMI()"/>
         </div>
       </div>
+
       <div class="fg" style="margin-top:8px">
         <label>Primary Goal</label>
         <select id="p_goal">
@@ -536,8 +768,10 @@ footer{
           <option value="maintain weight">⚖️ Maintain weight</option>
           <option value="improve energy">⚡ Improve energy</option>
           <option value="eat healthier">🥗 Eat healthier</option>
+          <option value="manage diabetes">🩺 Manage diabetes</option>
         </select>
       </div>
+
       <div class="fg">
         <label>Activity Level</label>
         <select id="p_activity">
@@ -548,10 +782,44 @@ footer{
           <option value="very active">🔥 Very Active</option>
         </select>
       </div>
+
+      <div class="fg">
+        <label>Medical Conditions</label>
+        <select id="p_medical">
+          <option value="none">None</option>
+          <option value="diabetes">🩺 Diabetes</option>
+          <option value="hypertension">💓 Hypertension</option>
+          <option value="high cholesterol">🫀 High Cholesterol</option>
+          <option value="thyroid disorder">🦋 Thyroid Disorder</option>
+          <option value="PCOS">🩻 PCOS</option>
+          <option value="heart disease">❤️ Heart Disease</option>
+          <option value="kidney disease">🫘 Kidney Disease</option>
+        </select>
+      </div>
+
+      <div class="fg">
+        <label>Allergies</label>
+        <input type="text" id="p_allergies" placeholder="e.g. peanuts, shellfish, dairy"/>
+      </div>
+
+      <div class="fg">
+        <label>Cuisine Preference</label>
+        <select id="p_cuisine">
+          <option value="any">🌍 Any / Mixed</option>
+          <option value="Indian">🇮🇳 Indian</option>
+          <option value="Mediterranean">🫒 Mediterranean</option>
+          <option value="Asian">🥢 Asian</option>
+          <option value="Western">🍝 Western</option>
+          <option value="Middle Eastern">🧆 Middle Eastern</option>
+          <option value="Mexican">🌮 Mexican</option>
+        </select>
+      </div>
+
       <div class="fg">
         <label>Dietary Restrictions</label>
-        <input type="text" id="p_diet" placeholder="e.g. vegan, gluten-free, nut allergy"/>
+        <input type="text" id="p_diet" placeholder="e.g. vegan, gluten-free, halal, jain"/>
       </div>
+
       <button class="btn btn-green" onclick="sendProfileRequest()">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="#fff"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm1 14.93V17a1 1 0 0 1-2 0v-.07A8 8 0 0 1 4.07 11H4a1 1 0 0 1 0-2h.07A8 8 0 0 1 11 4.07V4a1 1 0 0 1 2 0v.07A8 8 0 0 1 19.93 11H20a1 1 0 0 1 0 2h-.07A8 8 0 0 1 13 16.93z"/></svg>
         Generate My Plan
@@ -582,6 +850,13 @@ footer{
           <span class="qcard-desc">Complete meal plan & nutrition report</span>
         </div>
       </button>
+      <button class="qcard" onclick="quickAction('why')">
+        <div class="qcard-icon qc-purple">💡</div>
+        <div class="qcard-text">
+          <span class="qcard-title">Why This Food?</span>
+          <span class="qcard-desc">Contextual explanations for choices</span>
+        </div>
+      </button>
     </div>
 
   </aside>
@@ -597,6 +872,9 @@ footer{
         <div class="chat-head-sub">Powered by IBM Granite-4-h-small · always here to help</div>
       </div>
       <div class="chat-head-right">
+        <button class="icon-btn" onclick="exportChat()" title="Export chat">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+        </button>
         <button class="icon-btn" onclick="clearChat()" title="Clear chat">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 4h-3.5l-1-1h-5l-1 1H5v2h14zM6 19a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7H6z"/></svg>
         </button>
@@ -625,14 +903,15 @@ footer{
       <div class="input-row">
         <textarea id="userInput" rows="1"
           placeholder="Ask about nutrition, diet plans, food analysis…"
-          onkeydown="handleKey(event)"
           oninput="autoResize(this)"></textarea>
+        <input type="file" id="photoInput" accept="image/*" style="display:none"/>
+        <button class="photo-btn" onclick="triggerPhotoUpload()" title="Upload food photo">📸</button>
+        <button class="mic-btn" id="micBtn" onclick="toggleVoice()" title="Voice input">🎤</button>
         <button class="send-btn" id="sendBtn" onclick="sendMessage()" title="Send">
           <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
         </button>
       </div>
       <div class="input-footer">
-        <span>Enter to send · Shift+Enter new line</span>
         <span class="model-tag">
           <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
           ibm/granite-4-h-small
@@ -644,39 +923,179 @@ footer{
 </div>
 
 <!-- ════════════ FOOTER ════════════ -->
-<footer>Made with IBM Bob</footer>
+<footer>Made with IBM Granite AI · NutriAI — Your Smartest Nutrition Assistant</footer>
 
 <script>
-/* ── State ── */
+/* ═══════════════════════════════════════════════════════
+   STATE
+═══════════════════════════════════════════════════════ */
 const PROXY = 'http://localhost:5000';
 let busy = false;
+let isRecording = false;
+let recognition = null;
+const SpeechRecognition = window['SpeechRecognition'] || window['webkitSpeechRecognition'];
 
-/* ── Chip click ── */
+/* ═══════════════════════════════════════════════════════
+   THEME TOGGLE (Dark/Light)
+═══════════════════════════════════════════════════════ */
+function toggleTheme() {
+  document.body.classList.toggle('light');
+  const isLight = document.body.classList.contains('light');
+  localStorage.setItem('nutriai_theme', isLight ? 'light' : 'dark');
+  document.getElementById('themeIcon').textContent = isLight ? '☀️' : '🌙';
+}
+
+/* ═══════════════════════════════════════════════════════
+   BMI CALCULATOR (Live)
+═══════════════════════════════════════════════════════ */
+function updateBMI() {
+  const weight = parseFloat(document.getElementById('p_weight').value);
+  const height = parseFloat(document.getElementById('p_height').value);
+  const el = document.getElementById('bmiDisplay');
+
+  if (!weight || !height || height < 50) {
+    el.innerHTML = '--';
+    el.className = 'bmi-value';
+    return;
+  }
+
+  const bmi = weight / Math.pow(height / 100, 2);
+  const val = bmi.toFixed(1);
+  let cat, cls;
+
+  if (bmi < 18.5)      { cat = 'Underweight'; cls = 'bmi-under'; }
+  else if (bmi < 25)    { cat = 'Normal';      cls = 'bmi-normal'; }
+  else if (bmi < 30)    { cat = 'Overweight';   cls = 'bmi-over'; }
+  else                   { cat = 'Obese';        cls = 'bmi-obese'; }
+
+  el.innerHTML = `${val} <span class="bmi-cat">${cat}</span>`;
+  el.className = `bmi-value ${cls}`;
+}
+
+/* ═══════════════════════════════════════════════════════
+   VOICE INPUT (Web Speech API)
+═══════════════════════════════════════════════════════ */
+function toggleVoice() {
+  if (!SpeechRecognition) {
+    addError('Voice input not supported in this browser. Please use Chrome or Edge.');
+    return;
+  }
+
+  const btn = document.getElementById('micBtn');
+
+  if (isRecording) {
+    recognition.stop();
+    return;
+  }
+
+  recognition = new SpeechRecognition();
+  recognition.lang = 'en-US';
+  recognition.continuous = false;
+  recognition.interimResults = true;
+
+  recognition.onstart = () => {
+    isRecording = true;
+    btn.classList.add('recording');
+    btn.title = 'Stop recording';
+  };
+
+  recognition.onend = () => {
+    isRecording = false;
+    btn.classList.remove('recording');
+    btn.title = 'Voice input';
+  };
+
+  recognition.onresult = (e) => {
+    const transcript = Array.from(e.results).map(r => r[0].transcript).join('');
+    document.getElementById('userInput').value = transcript;
+    autoResize(document.getElementById('userInput'));
+    /* Auto-send on final result */
+    if (e.results[e.results.length - 1].isFinal) {
+      setTimeout(() => sendMessage(), 300);
+    }
+  };
+
+  recognition.onerror = (e) => {
+    isRecording = false;
+    btn.classList.remove('recording');
+    if (e.error !== 'no-speech') {
+      addError('Voice error: ' + e.error);
+    }
+  };
+
+  recognition.start();
+}
+
+/* ═══════════════════════════════════════════════════════
+   PHOTO UPLOAD
+═══════════════════════════════════════════════════════ */
+function triggerPhotoUpload() {
+  document.getElementById('photoInput').click();
+}
+
+function handlePhotoUpload(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = (ev) => {
+    /* Show preview in chat */
+    const imgHtml = `<div class="photo-preview"><img src="${ev.target.result}" alt="Uploaded food photo"/></div><p>📸 <em>Uploaded a food photo for analysis</em></p>`;
+    addMsg('user', imgHtml);
+
+    /* Ask AI to analyse */
+    const input = document.getElementById('userInput');
+    input.value = 'I have uploaded a photo of the food I am eating. Please provide a comprehensive nutritional analysis including: estimated calories, macronutrients (protein, carbs, fat), key vitamins and minerals present, a health rating out of 10, and suggest any healthier alternatives or improvements. Assume a typical serving size.';
+    sendMessage();
+  };
+  reader.readAsDataURL(file);
+  e.target.value = '';
+}
+
+/* ═══════════════════════════════════════════════════════
+   CHIP CLICK
+═══════════════════════════════════════════════════════ */
 function chipClick(el) {
   const txt = el.textContent.replace(/^[^\w]+/, '').trim();
   document.getElementById('userInput').value = txt;
   sendMessage();
 }
 
-/* ── Profile request ── */
+/* ═══════════════════════════════════════════════════════
+   PROFILE REQUEST (Enhanced)
+═══════════════════════════════════════════════════════ */
 function sendProfileRequest() {
-  const age    = document.getElementById('p_age').value;
-  const weight = document.getElementById('p_weight').value;
-  const height = document.getElementById('p_height').value;
-  const goal   = document.getElementById('p_goal').value;
-  const act    = document.getElementById('p_activity').value;
-  const diet   = document.getElementById('p_diet').value || 'none';
+  const age     = document.getElementById('p_age').value;
+  const gender  = document.getElementById('p_gender').value;
+  const weight  = document.getElementById('p_weight').value;
+  const height  = document.getElementById('p_height').value;
+  const goal    = document.getElementById('p_goal').value;
+  const act     = document.getElementById('p_activity').value;
+  const medical = document.getElementById('p_medical').value;
+  const allergy = document.getElementById('p_allergies').value || 'none';
+  const cuisine = document.getElementById('p_cuisine').value;
+  const diet    = document.getElementById('p_diet').value || 'none';
 
   if (!age || !weight || !height || !goal) {
     flashInput(); return;
   }
+
+  /* Calculate BMI for context */
+  const bmi = (weight / Math.pow(height / 100, 2)).toFixed(1);
+
   const msg =
-    `Create a personalised nutrition plan for me:\n` +
-    `• Age: ${age} years\n` +
-    `• Weight: ${weight} kg  |  Height: ${height} cm\n` +
-    `• Goal: ${goal}\n` +
+    `Create a detailed, personalised nutrition plan for me:\n` +
+    `• Age: ${age} years  |  Gender: ${gender}\n` +
+    `• Weight: ${weight} kg  |  Height: ${height} cm  |  BMI: ${bmi}\n` +
+    `• Primary Goal: ${goal}\n` +
     `• Activity level: ${act}\n` +
-    `• Dietary restrictions: ${diet}`;
+    `• Medical conditions: ${medical}\n` +
+    `• Allergies: ${allergy}\n` +
+    `• Cuisine preference: ${cuisine}\n` +
+    `• Dietary restrictions: ${diet}\n\n` +
+    `Please include: daily calorie target, macro split, a complete 7-day meal plan ` +
+    `tailored to my ${cuisine} cuisine preference, and specific foods to avoid based on my ` +
+    `medical conditions and allergies. Explain WHY each recommendation suits my profile.`;
 
   document.getElementById('userInput').value = msg;
   sendMessage();
@@ -693,24 +1112,31 @@ function flashInput() {
   });
 }
 
-/* ── Quick actions ── */
+/* ═══════════════════════════════════════════════════════
+   QUICK ACTIONS (Enhanced)
+═══════════════════════════════════════════════════════ */
 function quickAction(type) {
   const age    = document.getElementById('p_age').value    || '28';
   const weight = document.getElementById('p_weight').value || '70';
   const height = document.getElementById('p_height').value || '170';
   const goal   = document.getElementById('p_goal').value   || 'improve energy';
   const act    = document.getElementById('p_activity').value || 'moderate';
+  const cuisine = document.getElementById('p_cuisine').value || 'any';
+  const medical = document.getElementById('p_medical').value || 'none';
 
   const msgs = {
-    analyse: 'Analyse the nutritional value of grilled salmon with roasted sweet potato and steamed broccoli.',
-    swap:    'What are the healthiest alternatives to white rice? I prefer plant-based whole foods.',
-    report:  `Give me a comprehensive full nutrition report and complete 7-day meal plan.\n• Age: ${age}  • Weight: ${weight}kg  • Height: ${height}cm\n• Goal: ${goal}  • Activity: ${act}`,
+    analyse: 'Analyse the nutritional value of grilled salmon with roasted sweet potato and steamed broccoli. Include calories, macros (protein/carbs/fat), key micronutrients, health rating out of 10, and explain why this meal is good or bad for health.',
+    swap:    `What are the healthiest alternatives to white rice? I prefer ${cuisine} cuisine and plant-based whole foods. Explain WHY each alternative is better nutritionally.`,
+    report:  `Give me a comprehensive full nutrition report and complete 7-day meal plan.\n• Age: ${age}  • Weight: ${weight}kg  • Height: ${height}cm\n• Goal: ${goal}  • Activity: ${act}  • Cuisine: ${cuisine}\n• Medical: ${medical}\nInclude daily calorie target, macro breakdown, and meal timing.`,
+    why:     'I often eat white bread, sugary cereal, and processed snacks. For each of these foods, explain: 1) Why is it unhealthy? 2) What specific harm does it cause? 3) What is a better alternative and WHY is it better? Give scientific reasoning.',
   };
   document.getElementById('userInput').value = msgs[type];
   sendMessage();
 }
 
-/* ── Send ── */
+/* ═══════════════════════════════════════════════════════
+   SEND MESSAGE
+═══════════════════════════════════════════════════════ */
 async function sendMessage() {
   if (busy) return;
   const input = document.getElementById('userInput');
@@ -745,7 +1171,9 @@ async function sendMessage() {
   input.focus();
 }
 
-/* ── Message helpers ── */
+/* ═══════════════════════════════════════════════════════
+   MESSAGE HELPERS
+═══════════════════════════════════════════════════════ */
 function addMsg(role, html) {
   const msgs = document.getElementById('chatMessages');
   const welcome = msgs.querySelector('.welcome');
@@ -765,7 +1193,20 @@ function addMsg(role, html) {
   wrap.appendChild(av);
   wrap.appendChild(bub);
   msgs.appendChild(wrap);
+
+  /* Add feedback buttons for AI messages */
+  if (role === 'ai') {
+    const actions = document.createElement('div');
+    actions.className = 'msg-actions';
+    actions.innerHTML = `
+      <button class="fb-btn like" onclick="addFeedback(this,'like')" title="Helpful">👍</button>
+      <button class="fb-btn dislike" onclick="addFeedback(this,'dislike')" title="Not helpful">👎</button>
+    `;
+    msgs.appendChild(actions);
+  }
+
   msgs.scrollTop = msgs.scrollHeight;
+  saveHistory();
 }
 
 function showTyping() {
@@ -788,9 +1229,86 @@ function addError(msg) {
   d.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm1 15h-2v-2h2zm0-4h-2V7h2z"/></svg> ${escHtml(msg)}`;
   msgs.appendChild(d);
   msgs.scrollTop = msgs.scrollHeight;
+  saveHistory();
 }
 
-/* ── Format AI reply ── */
+/* ═══════════════════════════════════════════════════════
+   FEEDBACK SYSTEM
+═══════════════════════════════════════════════════════ */
+function addFeedback(btn, type) {
+  const bar = btn.parentElement;
+  const wasActive = btn.classList.contains('active');
+
+  /* Remove active from all siblings */
+  bar.querySelectorAll('.fb-btn').forEach(b => b.classList.remove('active'));
+
+  /* Toggle */
+  if (!wasActive) {
+    btn.classList.add('active');
+  }
+
+  /* Save to localStorage */
+  const fbData = JSON.parse(localStorage.getItem('nutriai_feedback') || '[]');
+  fbData.push({ type: wasActive ? 'removed' : type, time: Date.now() });
+  localStorage.setItem('nutriai_feedback', JSON.stringify(fbData));
+  saveHistory();
+}
+
+/* ═══════════════════════════════════════════════════════
+   EXPORT CHAT
+═══════════════════════════════════════════════════════ */
+function exportChat() {
+  const msgEls = document.querySelectorAll('#chatMessages .msg');
+  if (!msgEls.length) {
+    addError('No messages to export yet. Start a conversation first!');
+    return;
+  }
+
+  let text = '╔══════════════════════════════════════════╗\n';
+  text +=    '║     NutriAI — Chat Export                ║\n';
+  text +=    '║     Powered by IBM Granite AI            ║\n';
+  text +=    '╚══════════════════════════════════════════╝\n\n';
+  text += `Date: ${new Date().toLocaleString()}\n`;
+  text += '─'.repeat(44) + '\n\n';
+
+  msgEls.forEach(m => {
+    const role = m.classList.contains('user') ? '👤 You' : '🤖 NutriAI';
+    const content = m.querySelector('.bubble')?.innerText || '';
+    text += `${role}:\n${content}\n\n${'─'.repeat(44)}\n\n`;
+  });
+
+  text += '\n\n— Exported from NutriAI (IBM Granite-4) —\n';
+
+  const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `NutriAI-Chat-${new Date().toISOString().slice(0,10)}.txt`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(a.href);
+}
+
+/* ═══════════════════════════════════════════════════════
+   CHAT HISTORY (localStorage)
+═══════════════════════════════════════════════════════ */
+function saveHistory() {
+  try {
+    const msgs = document.getElementById('chatMessages');
+    localStorage.setItem('nutriai_history', msgs.innerHTML);
+  } catch { /* quota exceeded — silently fail */ }
+}
+
+function loadHistory() {
+  const saved = localStorage.getItem('nutriai_history');
+  if (saved && saved.trim()) {
+    document.getElementById('chatMessages').innerHTML = saved;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════
+   FORMAT AI REPLY
+═══════════════════════════════════════════════════════ */
 function formatReply(text) {
   let html = text
     .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
@@ -809,7 +1327,9 @@ function escHtml(t) {
   return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
 
-/* ── Utility ── */
+/* ═══════════════════════════════════════════════════════
+   UTILITY
+═══════════════════════════════════════════════════════ */
 function handleKey(e) {
   if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
 }
@@ -831,7 +1351,41 @@ function clearChat() {
         <span class="chip" onclick="chipClick(this)">⚡ High energy foods</span>
       </div>
     </div>`;
+  localStorage.removeItem('nutriai_history');
 }
+
+/* ═══════════════════════════════════════════════════════
+   INIT ON PAGE LOAD
+═══════════════════════════════════════════════════════ */
+window.addEventListener('DOMContentLoaded', () => {
+  /* Load theme preference */
+  if (localStorage.getItem('nutriai_theme') === 'light') {
+    document.body.classList.add('light');
+    document.getElementById('themeIcon').textContent = '☀️';
+  }
+
+  /* Load chat history */
+  loadHistory();
+
+  /* Update BMI if values exist */
+  updateBMI();
+
+  /* Event listeners */
+  const userInput = document.getElementById('userInput');
+  if (userInput) {
+    userInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        sendMessage();
+      }
+    });
+  }
+
+  const photoInput = document.getElementById('photoInput');
+  if (photoInput) {
+    photoInput.addEventListener('change', handlePhotoUpload);
+  }
+});
 </script>
 </body>
 </html>
